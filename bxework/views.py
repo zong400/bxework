@@ -19,7 +19,7 @@ def alarmSend():
     #msg1 = request.get_data().decode(encoding='utf-8')
     msg = request.get_json()
     print(msg)
-    partyid = __conf.get_partyid('运维部')
+    partyid = __conf.get_partyid()
     errcode = workwx.sendToK8sAPP(msg, party=partyid)
     if errcode == 0:
         return 'send msg ok'
