@@ -27,7 +27,7 @@
 ### 启动
 推荐使用docker镜像，需要自行把wxconfig.json挂载进镜像
 ```
-docker run -v /your/conf/wxconfig.json:/Bxework/conf/wxconfig.json -p 8800:8800
+docker run -v /your/conf:/Bxework/conf -p 8800:8800
 ```
 不使用docker可以直接git clone后用gunicorn运行：
 ```
