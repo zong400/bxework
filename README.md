@@ -29,6 +29,10 @@
 ```
 docker run -v /your/conf:/Bxework/conf -p 8800:8800 zong4/bxework:v1.0.5
 ```
+可以自定义gunicorn参数
+```
+docker run -v /your/conf:/Bxework/conf -p 8800:8800 zong4/bxework:v1.0.5 -b :9900 -w 2 bxework:app
+```
 不使用docker可以直接git clone后用gunicorn运行：
 ```
 gunicorn -w 1 bxework:app
