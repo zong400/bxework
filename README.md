@@ -1,11 +1,8 @@
 # bxework
 为Prometheus开发的基于企业微信的告警应用，使用webhook方式接收alertmanager发出的告警信息
 
-## 依赖
-项目依赖flask、requests，请先安装
-
 ## 启动
-使用flask框架，推荐使用gunicorn部署
+使用flask框架，推荐使用docker部署
 
 ### bxework配置
 配置文件使用json格式，放在conf/wxconfig.json，请自行创建
@@ -28,9 +25,15 @@
 - app：接受告警信息的企业应用名字
 
 ### 启动
+推荐使用docker镜像，需要自行把wxconfig.json挂载进镜像
+```
+docker run -v /your/conf/wxconfig.json:/Bxework/conf/wxconfig.json 
+```
+不使用docker可以直接git clone后用gunicorn运行：
 ```
 gunicorn -w 1 bxework:app
 ```
+> 项目依赖flask、requests，请先安装
 
 ## alertmanager配置
 添加一个receiver：
@@ -38,7 +41,7 @@ gunicorn -w 1 bxework:app
 receivers:
 - name: 'work-wx-receiver'
   webhook_configs:
-  - url: 'http://your.domain/workwx/api/alarm/receiver'
+  - url: 'http://your.domain/workwx/api/alert/receiver'
 ```
 
 
