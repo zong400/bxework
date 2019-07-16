@@ -113,12 +113,12 @@ def sendToK8sAPP(msg, party='', users=''):
     wx = WeixinMsg(__corpid, __k8s_secret)
     errsum = 0
     markdown_teml = r'''`Prometheus告警`{}, {}, {}
--详细内容：<font color=\"info\">{}</font>
--告警级别：<font color=\"warning\">{}</font>
--POD_NAME: <font color=\"comment\">{}</font>
--开始时间：<font color=\"comment\">{}</font>
--容器重启次数：<font color=\"comment\">{}</font>
--NAMESPACE：<font color=\"comment\">{}</font>
+>详细内容：<font color=\"info\">{}</font>
+>告警级别：<font color=\"warning\">{}</font>
+>POD_NAME: <font color=\"comment\">{}</font>
+>开始时间：<font color=\"comment\">{}</font>
+>容器重启次数：<font color=\"comment\">{}</font>
+>NAMESPACE：<font color=\"comment\">{}</font>
         '''
     for alert in msg['alerts']:
         try:
