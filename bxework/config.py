@@ -18,12 +18,8 @@ class config(object):
     def get_wx_app_agentid(self):
         return self.__config['app']['agentid']
 
-    def get_partyid(self):
-        '''
-        返回部门id，如果没找到部门默认返回第一个
-        :param name: 企业号名字
-        :param party_name: 部门名字
-        :return: partyid
-        '''
-        return self.__config['party']['party_id']
+    def get_sendto(self):
+        id = self.__config['sendto']['id']
+        type = self.__config['sendto']['type']
+        return {"id":id ,"type":type}
 

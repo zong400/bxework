@@ -15,7 +15,7 @@ def warning_status(status):
     else:
         return '状态不明'
 
-def sendToK8sAPP(msg, party):
+def sendToK8sAPP(msg, party='', users=''):
     '''
     把json格式的告警消息发送到企业微信的K8s应用
     :param msg: 告警消息，json格式，例子：{
@@ -135,6 +135,6 @@ def sendToK8sAPP(msg, party):
         except KeyError as e:
             print('传入的json不存在 {} 键'.format(e))
         else:
-            errcode, errmsg = wx.send_markdown_msg(markdown_msg, __k8s_agentid, party=party)
+            errcode, errmsg = wx.send_markdown_msg(markdown_msg, __k8s_agentid, party=party, user=users)
             errsum += errcode
     return errsum
