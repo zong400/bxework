@@ -10,7 +10,7 @@ __conf = config()
 def hello_world():
     return 'Hello World!'
 
-@app.route('/workwx/api/alarm/receiver', methods=['POST'])
+@app.route('/workwx/api/alert/receiver', methods=['POST'])
 def alarmSend():
     '''
     接收Alarmmanager的告警消息，处理后通过企业微信发送
