@@ -1,5 +1,6 @@
 # bxework
 为Prometheus开发的基于企业微信的告警应用，使用webhook方式接收alertmanager发出的告警信息
+目前能处理K8s内容器发出的告警信息，更多告警开发中
 
 ## 启动
 使用flask框架，推荐使用docker部署
