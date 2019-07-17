@@ -11,7 +11,7 @@ def hello_world():
     return 'Hello World!'
 
 @app.route('/workwx/api/pod/receiver', methods=['POST'])
-def alert_send():
+def send_pod_alert():
     '''
     接收Alarmmanager发出的Kubernetes的告警消息，处理后通过企业微信发送
     :return: errcode
@@ -29,7 +29,7 @@ def alert_send():
     return 'send to wx, errcode: {}'.format(errcode)
 
 @app.route('/workwx/api/node/receiver', methods=['POST'])
-def alert_send():
+def send_node_alert():
     '''
     接收Alarmmanager发出的node的告警消息，处理后通过企业微信发送
     :return:
