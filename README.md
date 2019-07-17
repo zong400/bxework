@@ -41,12 +41,17 @@ gunicorn -w 1 bxework:app
 > 项目依赖flask、requests，请先安装
 
 ## alertmanager配置
-添加一个receiver：
+添加receiver：
 ```yaml
 receivers:
+# 接收容器告警
 - name: 'work-wx-receiver'
   webhook_configs:
-  - url: 'http://your.domain/workwx/api/alert/receiver'
+  - url: 'http://your.domain:8800/workwx/api/pod/receiver'
+# 接收node告警
+- name: 'work-wx-node-receiver'
+  webhook_configs:
+  - url: 'http://your.domain:8800/workwx/api/node/receiver'
 ```
 
 
