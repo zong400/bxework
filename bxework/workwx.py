@@ -18,7 +18,7 @@ def warning_status(status):
 def send_node_alert(msg, party='', users=''):
     errsum = 0
     wx = WeixinMsg(__corpid, __k8s_secret)
-    markdown_teml = '''`Prometheus告警`{}, {}
+    markdown_teml = r'''`Prometheus告警`{}, {}
 >详细内容：{}
 >告警级别：<font color=\"warning\">{}</font>
 >实例：<font color=\"info\">{}</font>
