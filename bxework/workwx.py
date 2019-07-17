@@ -15,7 +15,33 @@ def warning_status(status):
     else:
         return '状态不明'
 
-def sendToK8sAPP(msg, party='', users=''):
+def send_node_alert(msg, party='', users=''):
+    errsum = 0
+    wx = WeixinMsg(__corpid, __k8s_secret)
+    markdown_teml = '''`Prometheus告警`{}, {}
+>详细内容：{}
+>告警级别：<font color=\"warning\">{}</font>
+>实例：<font color=\"info\">{}</font>
+>开始时间：<font color=\"comment\">{}</font>
+    '''
+    for alert in msg['alerts']:
+        try:
+            stime = alert['startsAt']
+            markdown_msg = markdown_teml.format(warning_status(alert['status']),
+                                                alert['labels']['alertname'],
+                                                alert['annotations']['description'],
+                                                alert['labels']['severity'],
+                                                alert['labels']['instance'],
+                                                stime.split('.')[0].replace('T', ' '))
+        except KeyError as e:
+            print('传入的json不存在 {} 键'.format(e))
+        else:
+            errcode, errmsg = wx.send_markdown_msg(markdown_msg, __k8s_agentid, party=party, user=users)
+            errsum += errcode
+    return errsum
+
+
+def send_k8s_alert(msg, party='', users=''):
     '''
     把json格式的告警消息发送到企业微信的K8s应用
     :param msg: 告警消息，json格式，例子：{
