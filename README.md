@@ -26,7 +26,7 @@
 - app：接受告警信息的企业应用名字
 
 ### 启动
-推荐使用docker镜像，需要自行把wxconfig.json挂载进镜像
+推荐使用docker镜像，需要自行把wxconfig.json挂载进容器
 ```
 docker run -v /your/conf:/Bxework/conf -p 8800:8800 zong4/bxework:v1.0.5
 ```
