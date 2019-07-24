@@ -23,3 +23,5 @@ class config(object):
         type = self.__config['sendto']['type']
         return {"id":id ,"type":type}
 
+    def get_callback(self):
+        return self.__config['callback']['token'], self.__config['callback']['EncodingAESKey']

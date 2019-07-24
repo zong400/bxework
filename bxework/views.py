@@ -3,12 +3,22 @@
 from bxework import app, workwx
 from bxework.config import config
 from flask import request
+import weixinapi.WXCallback as wxcb
 
 __conf = config()
 
 @app.route('/')
 def hello_world():
     return 'Hello World!'
+
+@app.route('/workwx/api/callback', methods=['GET', 'POST'])
+def wx_callback():
+    req = request.args
+    if "echostr" in req:
+        wxcb.verfiy_echo(req)
+    if request.method == 'POST':
+        pass
+
 
 @app.route('/workwx/api/pod/receiver', methods=['POST'])
 def send_pod_alert():
