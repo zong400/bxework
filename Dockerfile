@@ -1,7 +1,4 @@
-FROM python:3.7.4-alpine
-
-RUN apk --no-cache add gcc
-RUN pip install flask requests gunicorn pycryptodome
+FROM zong4/py37:v0.2
 WORKDIR /Bxework
 COPY bxework/ ./bxework
 COPY weixinapi/ ./weixinapi
