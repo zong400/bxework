@@ -15,7 +15,7 @@ def hello_world():
 def wx_callback():
     req = request.args
     if "echostr" in req:
-        wxcb.verfiy_echo(req)
+        return wxcb.verfiy_echo(req)
     if request.method == 'POST':
         pass
 
