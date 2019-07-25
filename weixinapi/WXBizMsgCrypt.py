@@ -183,7 +183,7 @@ class Prpcrypt:
             print(e)
             return ierror.WXBizMsgCrypt_IllegalBuffer, None
         if from_receiveid.decode() != receiveid:
-            print('corpid error, from_id:{}, id{}'.format(from_receiveid.decode(), receiveid))
+            print('corpid error, from_id: {}, id: {}'.format(from_receiveid.decode(), receiveid))
             return ierror.WXBizMsgCrypt_ValidateCorpid_Error, None
         return 0, xml_content
 
