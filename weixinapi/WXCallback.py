@@ -1,6 +1,7 @@
 from .WXBizMsgCrypt import WXBizMsgCrypt
 from bxework.config import config
 from urllib import parse
+import xml.etree.cElementTree as ET
 
 def __get_wxcrypt():
     conf = config()
@@ -8,11 +9,18 @@ def __get_wxcrypt():
     corpid = conf.get_wx_corpid()
     return WXBizMsgCrypt(token, EncodingASEKey, corpid)
 
-def verfiy_echo(request_args):
+def verfiy_echo(get_args):
     wxcrypt = __get_wxcrypt()
-    sEchoStr = parse.unquote(request_args['echostr'], encoding='utf-8', errors='replace')
-    ret, sReplyEchoStr = wxcrypt.VerifyURL(request_args['msg_signature'], request_args['timestamp'], request_args['nonce'], sEchoStr)
+    sEchoStr = parse.unquote(get_args['echostr'], encoding='utf-8', errors='replace')
+    ret, sReplyEchoStr = wxcrypt.VerifyURL(get_args['msg_signature'], get_args['timestamp'], get_args['nonce'], sEchoStr)
     if ret != 0:
         return 'error: verify fail, errcode: {}'.format(ret)
     return sReplyEchoStr
 
+def received_from_wx(get_args, post_data):
+    wxcrypt = __get_wxcrypt()
+    ret, xml_content = wxcrypt.DecryptMsg(post_data, get_args['msg_signature'], get_args['timestamp'], get_args['nonce'])
+    if ret != 0:
+        return 'Crypt error, code: {}'.format(ret)
+    xml_tree = ET.fromstring(xml_content)
+    return xml_tree

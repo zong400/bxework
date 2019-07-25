@@ -13,11 +13,11 @@ def hello_world():
 
 @app.route('/workwx/api/callback', methods=['GET', 'POST'])
 def wx_callback():
-    req = request.args
-    if "echostr" in req:
-        return wxcb.verfiy_echo(req)
+    get_args = request.args
+    if "echostr" in get_args:
+        return wxcb.verfiy_echo(get_args)
     if request.method == 'POST':
-        pass
+        return wxcb.received_from_wx(get_args, request.data)
 
 
 @app.route('/workwx/api/pod/receiver', methods=['POST'])
