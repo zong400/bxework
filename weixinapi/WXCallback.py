@@ -23,4 +23,5 @@ def received_from_wx(get_args, post_data):
     if ret != 0:
         return 'Crypt error, code: {}'.format(ret)
     xml_tree = ET.fromstring(xml_content)
-    return xml_tree
+    content = xml_tree.find('Content').text
+    return content
