@@ -17,7 +17,9 @@ def wx_callback():
     if "echostr" in get_args:
         return wxcb.verfiy_echo(get_args)
     if request.method == 'POST':
-        return wxcb.received_from_wx(get_args, request.data)
+        content = wxcb.received_from_wx(get_args, request.data)
+        print(content)
+        return content
 
 
 @app.route('/workwx/api/pod/receiver', methods=['POST'])

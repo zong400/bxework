@@ -24,4 +24,7 @@ def received_from_wx(get_args, post_data):
         return 'Crypt error, code: {}'.format(ret)
     xml_tree = ET.fromstring(xml_content)
     content = xml_tree.find('Content').text
+    msg_type = xml_tree.find('MsgType').text
+    touser = xml_tree.find('ToUserName').text
+    create_time = xml_tree.find('CreateTime').text
     return content
