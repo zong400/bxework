@@ -28,7 +28,6 @@ def send_pod_alert():
     '''
     #msg1 = request.get_data().decode(encoding='utf-8')
     msg = request.get_json()
-    print(msg)
     sendto = __conf.get_sendto()
     if sendto['type'] == 'party':
         errcode = workwx.send_k8s_alert(msg, party=sendto['id'])
