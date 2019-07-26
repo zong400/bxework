@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block body %}
+<head>
+    <script src="//cdn.bootcss.com/echarts/4.2.1/echarts.min.js"></script>
+</head>
+{% if freemem %}
+    <div id="freemem" style="width: 1000px;height:800px;"></div>
+    <script type="text/javascript">
+        var fmem_data = {{ freemem|tojson|safe }};
+        var fmem_chart = echarts.init(document.getElementById('freemem'));
+        var option = {
+            title: {
+                text: '容器剩余内存'
+            },
+            tooltip: {},
+            legend: {
+                data:['单位MB']
+            },
+            xAxis: {
+                data: fmem_data['podnames']
+            },
+            yAxis: {},
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: fmem_data['values']
+            }]
+        };
+        fmem_chart.setOption(option)
+    </script>
+{% endif %}
+{% endblock %}
+

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if title %}
+        <title>{{ title }}</title>
+    {% else %}
+        <title>资源详情页</title>
+    {% endif %}
+</head>
+<body>
+{% block body %}{% endblock %}
+</body>
+</html>

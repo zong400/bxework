@@ -2,7 +2,8 @@
 
 from bxework import app, workwx
 from bxework.config import config
-from flask import request
+from datacollect.promutil import promutil
+from flask import request, render_template
 import weixinapi.WXCallback as wxcb
 
 __conf = config()
@@ -17,10 +18,16 @@ def wx_callback():
     if "echostr" in get_args:
         return wxcb.verfiy_echo(get_args)
     if request.method == 'POST':
-        content = wxcb.received_from_wx(get_args, request.data)
-        print(content)
+        content, msg_type, touser, create_time = wxcb.received_from_wx(get_args, request.data)
+        print(content, msg_type, touser, create_time)
         return content
 
+@app.route('/workwx/api/prom/freemem', methods=['GET'])
+def freemem():
+    namespace = request.args.get('namespace')
+    prom = promutil('promtest.bxr.cn')
+    podmem = prom.container_free_mem(namespace)
+    return render_template('freemem_chart.html', freemem=podmem)
 
 @app.route('/workwx/api/pod/receiver', methods=['POST'])
 def send_pod_alert():

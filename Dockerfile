@@ -2,6 +2,7 @@ FROM zong4/py37:v0.2
 WORKDIR /Bxework
 COPY bxework/ ./bxework
 COPY weixinapi/ ./weixinapi
+COPY datacollect/ ./datacollect
 COPY app.py ./
 USER nobody
 ENTRYPOINT ["gunicorn"]

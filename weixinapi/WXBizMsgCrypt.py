@@ -15,14 +15,16 @@ import time
 import struct
 from Crypto.Cipher import AES
 import xml.etree.cElementTree as ET
-import sys
 import socket
 from . import ierror
 
 """
-关于Crypto.Cipher模块，ImportError: No module named 'Crypto'解决方案
-请到官方网站 https://www.dlitz.net/software/pycrypto/ 下载pycrypto。
-下载后，按照README中的“Installation”小节的提示进行pycrypto安装。
+关于Crypto.Cipher模块，pycrypto已经两年不维护，推荐使用 pycryptodome代替，pip安装
+关于python3，微信官方没有给出py3的sdk，这个是参照网上代码自己修改的，主要改动：
+1. sha需要byte类型参数
+2. decrypt方法对比recevised_id需要decode
+3. encrypt方法构造text需要byte类型
+另外WXBizMsgCrypt类构造时，参数sCorpId需要先做urldecode
 """
 
 
