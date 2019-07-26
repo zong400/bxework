@@ -3,6 +3,33 @@
 <head>
     <script src="//cdn.bootcss.com/echarts/4.2.1/echarts.min.js"></script>
 </head>
+{% if mem_percen %}
+    <div id="total_mem" style="width: 1000px;height:600px;"></div>
+    <script type="text/javascript">
+        var percen = {{ mem_percen|safe }};
+        var percen_char = echarts.init(document.getElementById('total_mem'));
+        var percen_opt = {
+    tooltip : {
+        formatter: "{a} <br/>{b} : {c}%"
+    },
+    toolbox: {
+        feature: {
+            restore: {},
+            saveAsImage: {}
+        }
+    },
+    series: [
+        {
+            name: '业务指标',
+            type: 'gauge',
+            detail: {formatter:'{value}%'},
+            data: [{value: {{ mem_percen }}, name: '内存总体使用率'}]
+        }
+    ]
+};
+        percen_char.setOption(percen_opt)
+    </script>
+{% endif %}
 {% if freemem %}
     <div id="freemem" style="width: 1000px;height:800px;"></div>
     <script type="text/javascript">

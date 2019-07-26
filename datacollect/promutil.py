@@ -6,6 +6,16 @@ class promutil():
     def __init__(self, promdomain):
         self.__promdomain = promdomain
 
+    def total_mem_percen(self):
+        query = r'ceil(sum(container_memory_working_set_bytes{id="/"})/sum(machine_memory_bytes)*100)'
+        params = {'query': query}
+        url = 'http://{}/api/v1/query'.format(self.__promdomain)
+        req = requests.get(url, params=params)
+        json_data = req.json()
+        if not json_data['status'] == 'success':
+            return 'query fail. errorType: {}, error: {}'.format(json_data['errorType'], json_data['error'])
+        return json_data['data']['result'][0]['value'][1]
+
     def container_free_mem(self, namespace, topn=5):
         '''
         获取可用内存最少的5个pod

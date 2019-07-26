@@ -25,9 +25,11 @@ def wx_callback():
 @app.route('/workwx/api/prom/freemem', methods=['GET'])
 def freemem():
     namespace = request.args.get('namespace')
-    prom = promutil('prometheus:9090')
+    #prom = promutil('prometheus:9090')
+    prom = promutil('promtest.bxr.cn')
     podmem = prom.container_free_mem(namespace)
-    return render_template('freemem_chart.html', freemem=podmem)
+    mem_percen = prom.total_mem_percen()
+    return render_template('freemem_chart.html', freemem=podmem, mem_percen=mem_percen)
 
 @app.route('/workwx/api/pod/receiver', methods=['POST'])
 def send_pod_alert():
