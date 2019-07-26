@@ -25,7 +25,7 @@ def wx_callback():
 @app.route('/workwx/api/prom/freemem', methods=['GET'])
 def freemem():
     namespace = request.args.get('namespace')
-    prom = promutil('promtest.bxr.cn')
+    prom = promutil('prometheus:9090')
     podmem = prom.container_free_mem(namespace)
     return render_template('freemem_chart.html', freemem=podmem)
 
