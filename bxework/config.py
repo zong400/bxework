@@ -3,11 +3,16 @@ import json
 class config(object):
     def __init__(self):
         self.__config = self.__open_config_file('conf/wxconfig.json')
+        self.__dsconfig = self.__open_config_file('conf/dsconfig.json')
 
     def __open_config_file(self, path):
         with open(path, mode='r', encoding='utf8') as f:
             conf = json.load(f)
         return conf
+
+    @property
+    def prometheus_domain(self):
+        return self.__dsconfig['prometheus_domain']
 
     def get_wx_corpid(self):
         return self.__config['corpid']
