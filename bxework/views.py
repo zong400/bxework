@@ -34,7 +34,7 @@ def freemem():
 def cpuusage():
     namespace = request.args.get('namespace')
     #prom = promutil('prometheus:9090')
-    prom = promutil('promtest.bxr.cn')
+    prom = promutil(__conf.prometheus_domain)
     podcpu = prom.pod_cpu_usage(namespace)
     cpupercen = prom.total_cpu_percen()
     return render_template('cpu_usage_chart.html', podcpu=podcpu, cpupercen=cpupercen)
