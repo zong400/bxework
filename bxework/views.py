@@ -25,11 +25,20 @@ def wx_callback():
 @app.route('/workwx/api/prom/freemem', methods=['GET'])
 def freemem():
     namespace = request.args.get('namespace')
-    prom = promutil('prometheus:9090')
-    #prom = promutil('promtest.bxr.cn')
+    #prom = promutil('prometheus:9090')
+    prom = promutil('promtest.bxr.cn')
     podmem = prom.container_free_mem(namespace)
     mem_percen = prom.total_mem_percen()
     return render_template('freemem_chart.html', freemem=podmem, mem_percen=mem_percen)
+
+@app.route('/workwx/api/prom/cpuusage')
+def cpuusage():
+    namespace = request.args.get('namespace')
+    #prom = promutil('prometheus:9090')
+    prom = promutil('promtest.bxr.cn')
+    podcpu = prom.pod_cpu_usage(namespace)
+    cpupercen = prom.total_cpu_percen()
+    return render_template('cpu_usage_chart.html', podcpu=podcpu, cpupercen=cpupercen)
 
 @app.route('/workwx/api/pod/receiver', methods=['POST'])
 def send_pod_alert():

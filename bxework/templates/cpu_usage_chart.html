@@ -3,11 +3,11 @@
 <head>
     <script src="//cdn.bootcss.com/echarts/4.2.1/echarts.min.js"></script>
 </head>
-{% if mem_percen %}
-    <div id="total_mem" style="width: 1000px;height:600px;"></div>
-    <script type="text/javascript">
-        var percen = {{ mem_percen|safe }};
-        var percen_char = echarts.init(document.getElementById('total_mem'));
+{% if cpupercen %}
+<div id="total_cpu" style="width: 1000px;height:600px;"></div>
+<script type="text/javascript">
+        var percen = {{ cpupercen|safe }};
+        var percen_char = echarts.init(document.getElementById('total_cpu'));
         var percen_opt = {
     tooltip : {
         formatter: "{a} <br/>{b} : {c}%"
@@ -23,38 +23,37 @@
             name: '业务指标',
             type: 'gauge',
             detail: {formatter:'{value}%'},
-            data: [{value: percen, name: '内存总体使用率'}]
+            data: [{value: percen, name: 'CPU总体使用率'}]
         }
     ]
 };
         percen_char.setOption(percen_opt)
     </script>
 {% endif %}
-{% if freemem %}
-    <div id="freemem" style="width: 1000px;height:800px;"></div>
+{% if podcpu %}
+    <div id="cpu_usage" style="width: 1000px;height:800px;"></div>
     <script type="text/javascript">
-        var fmem_data = {{ freemem|tojson|safe }};
-        var fmem_chart = echarts.init(document.getElementById('freemem'));
+        var cpu_data = {{ podcpu|tojson|safe }};
+        var cpu_chart = echarts.init(document.getElementById('cpu_usage'));
         var option = {
             title: {
-                text: '容器剩余内存'
+                text: '容器CPU使用率'
             },
             tooltip: {},
             legend: {
-                data:['单位MB']
+                data:['单位Core']
             },
             yAxis: {
-                data: fmem_data['podnames']
+                data: cpu_data['podnames']
             },
             xAxis: {},
             series: [{
-                name: '内存',
+                name: 'CPU',
                 type: 'bar',
-                data: fmem_data['values']
+                data: cpu_data['values']
             }]
         };
-        fmem_chart.setOption(option)
+        cpu_chart.setOption(option)
     </script>
 {% endif %}
 {% endblock %}
-
