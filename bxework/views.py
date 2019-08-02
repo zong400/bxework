@@ -22,6 +22,14 @@ def wx_callback():
         print(content, msg_type, touser, create_time)
         return content
 
+@app.route('/workwx/api/prom/traefikstatus')
+def reqrate():
+    prom = promutil(__conf.prometheus_domain)
+    rate = prom.request_rate()
+    urlreqs = prom.normal_request()
+    badreqs = prom.bad_request()
+    return render_template('request_rate.html', rate=rate, urlreqs=urlreqs, badreqs=badreqs)
+
 @app.route('/workwx/api/prom/freemem', methods=['GET'])
 def freemem():
     namespace = request.args.get('namespace')

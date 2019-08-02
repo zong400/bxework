@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+{% block body %}
+    <head>
+        <script src="//cdn.bootcss.com/echarts/4.2.1/echarts.min.js"></script>
+    </head>
+    {% if rate %}
+        <div id="request_rate" style="width: 1000px;height:600px;"></div>
+        <script type="text/javascript">
+            var reqrate = {{ rate|tojson|safe }};
+            var reqrate_char = echarts.init(document.getElementById('request_rate'));
+            var option = {
+                title: {
+                    left: 'center',
+                    text: '网关请求速率'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: reqrate['times']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: reqrate['values'],
+                    type: 'line'
+                }]
+            };
+            reqrate_char.setOption(option)
+        </script>
+    {% endif %}
+    {% if urlreqs %}
+    <div id="urlpie" style="width: 1000px;height:600px;"></div>
+    <script type="text/javascript">
+            var urlreqs = {{ urlreqs|list|safe }};
+            var reqs_char = echarts.init(document.getElementById('urlpie'));
+            var reqs_opt = {
+                title: {
+                    text: '后端请求比例',
+                    x: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                calculable: true,
+                series: [
+                    {
+                        name: '后端',
+                        type: 'pie',
+                        radius: [15, 150],
+                        center: ['50%', '50%'],
+                        roseType: 'radius',
+                        label: {
+                            normal: {
+                                show: true
+                            },
+                            emphasis: {
+                                show: true
+                            }
+                        },
+                        lableLine: {
+                            normal: {
+                                show: true
+                            },
+                            emphasis: {
+                                show: true
+                            }
+                        },
+                        data: urlreqs
+                    }
+                ]
+            };
+            reqs_char.setOption(reqs_opt);
+            </script>
+    {% endif %}
+    {% if badreqs %}
+        <div id="badreqs" style="width: 1000px;height:100px"></div>
+        <script type="text/javascript">
+            var badreq = {{ badreqs|string }}
+            var bb = document.getElementById("badreqs")
+            bb.innerHTML = "<p>过去1小时出现4xx,5xx的频率：" + badreq + "</p>"
+        </script>
+    {% endif %}
+{% endblock %}
