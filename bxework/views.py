@@ -3,7 +3,9 @@
 from bxework import app, workwx
 from bxework.config import config
 from datacollect.promutil import promutil
-from flask import request, render_template
+from datacollect.redisdb import Redisdb
+from weixinapi.weixin import Weixin
+from flask import request, render_template, g
 import weixinapi.WXCallback as wxcb
 
 __conf = config()
@@ -79,3 +81,8 @@ def send_node_alert():
     else:
         return 'sunknow type of sendto.'
     return 'send to wx, errcode: {}'.format(errcode)
+
+@app.route('/tencent/checkpic', methods=['POST'])
+def log_pic():
+    msg = request.get_json()
+    print(msg)
