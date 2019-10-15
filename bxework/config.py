@@ -1,4 +1,5 @@
 import json
+from datacollect.redisdb import Redisdb
 
 class config(object):
     def __init__(self):
@@ -9,6 +10,10 @@ class config(object):
         with open(path, mode='r', encoding='utf8') as f:
             conf = json.load(f)
         return conf
+
+    @property
+    def redis_pool(self):
+        return Redisdb.redis_pool(**self.__dsconfig['redis'])
 
     @property
     def prometheus_domain(self):

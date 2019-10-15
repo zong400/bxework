@@ -1,6 +1,7 @@
 # coding = utf-8
 from bxework.config import config
 from weixinapi.weixin_msg import WeixinMsg
+from weixinapi.weixin import Weixin
 
 __conf = config()
 __corpid = __conf.get_wx_corpid()
@@ -17,7 +18,8 @@ def warning_status(status):
 
 def send_node_alert(msg, party='', users=''):
     errsum = 0
-    wx = WeixinMsg(__corpid, __k8s_secret)
+    wx = Weixin(corpid=__corpid, corpsecret=__k8s_secret, redis_pool=__conf.redis_pool)
+    wxmsg = WeixinMsg(wx)
     markdown_teml = r'''`Prometheus告警`{}, {}
 >详细内容：{}
 >告警级别：<font color=\"warning\">{}</font>
@@ -36,7 +38,8 @@ def send_node_alert(msg, party='', users=''):
         except KeyError as e:
             print('传入的json不存在 {} 键'.format(e))
         else:
-            errcode, errmsg = wx.send_markdown_msg(markdown_msg, __k8s_agentid, party=party, user=users)
+            errcode, errmsg = wxmsg.send_markdown_msg(markdown_msg, __k8s_agentid, party=party, user=users)
+            print(errcode, errmsg)
             errsum += errcode
     return errsum
 
@@ -136,7 +139,8 @@ def send_k8s_alert(msg, party='', users=''):
     :param party: 通讯录的部门id
     :return: 返回微信errcode，errmsg
     '''
-    wx = WeixinMsg(__corpid, __k8s_secret)
+    wx = Weixin(corpid=__corpid, corpsecret=__k8s_secret, redis_pool=__conf.redis_pool)
+    wxmsg = WeixinMsg(wx)
     errsum = 0
     markdown_teml = r'''`Prometheus告警`{}, {}, {}
 >详细内容：<font color=\"info\">{}</font>
@@ -161,6 +165,6 @@ def send_k8s_alert(msg, party='', users=''):
         except KeyError as e:
             print('传入的json不存在 {} 键'.format(e))
         else:
-            errcode, errmsg = wx.send_markdown_msg(markdown_msg, __k8s_agentid, party=party, user=users)
+            errcode, errmsg = wxmsg.send_markdown_msg(markdown_msg, __k8s_agentid, party=party, user=users)
             errsum += errcode
     return errsum
