@@ -12,7 +12,7 @@ __conf = config()
 
 @app.route('/')
 def hello_world():
-    return 'Hello World!'
+    return 'Hello World!!!'
 
 @app.route('/workwx/api/callback', methods=['GET', 'POST'])
 def wx_callback():
