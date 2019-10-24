@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block body %}
+<head>
+    <title>pods</title>
+    <link rel="stylesheet" type="text/css" href="../../../static/themes/metro/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../../../static/themes/mobile.css">
+    <link rel="stylesheet" type="text/css" href="../../../static/themes/icon.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../static/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../../static/jquery.easyui.mobile.js"></script>
+</head>
+<body>
+    {% if pods %}
+    <table id="dg" data-options="header:'#hh',singleSelect:true,border:false,fit:true,fitColumns:true,scrollbarSize:0">
+        <thead>
+            <tr>
+                <th data-options="field:'pod_name',width:80">Pod Name</th>
+                <th data-options="field:'pod_ip',width:100">Pod IP</th>
+                <th data-options="field:'host_ip',width:100">Host IP</th>
+                <th data-options="field:'restart_count',width:30,align:'right'">Restart count</th>
+                <th data-options="field:'status',width:80,align:'right'">Status</th>
+            </tr>
+        </thead>
+    </table>
+    <div id="hh">
+    	<div class="m-toolbar">
+    		<div class="m-title">Pods list</div>
+    	</div>
+    </div>
+	<script>
+        var data = {{ pods|list|safe }};
+		$(function(){
+			$('#dg').datagrid({
+				data: data
+			});
+		});
+	</script>
+    {% endif %}
+</body>
+{% endblock %}

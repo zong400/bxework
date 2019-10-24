@@ -81,3 +81,11 @@ def send_node_alert():
     else:
         return 'sunknow type of sendto.'
     return 'send to wx, errcode: {}'.format(errcode)
+
+@app.route('/workwx/api/k8s/pod', methods=['GET','POST'])
+def k8s_pod():
+    if request.method == 'GET':
+        pods = workwx.get_pods()
+        return render_template('get_pod.html', pods=pods)
+    if request.method == 'POST':
+        pass

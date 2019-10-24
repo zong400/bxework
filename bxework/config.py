@@ -35,3 +35,6 @@ class config(object):
 
     def get_callback(self):
         return self.__config['callback']['token'], self.__config['callback']['EncodingAESKey']
+
+    def get_k8s_config(self):
+        return self.__dsconfig['kubernetes']

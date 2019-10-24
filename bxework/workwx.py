@@ -2,6 +2,7 @@
 from bxework.config import config
 from weixinapi.weixin_msg import WeixinMsg
 from weixinapi.weixin import Weixin
+from kubernetes import client as kubeclient , config as kubeconfig
 
 __conf = config()
 __corpid = __conf.get_wx_corpid()
@@ -168,3 +169,12 @@ def send_k8s_alert(msg, party='', users=''):
             errcode, errmsg = wxmsg.send_markdown_msg(markdown_msg, __k8s_agentid, party=party, user=users)
             errsum += errcode
     return errsum
+
+def get_pods():
+    kube_conf = __conf.get_k8s_config()
+    kubeconfig.load_kube_config(config_file=kube_conf['kubeconfig'], context=kube_conf['context'])
+    v1 = kubeclient.CoreV1Api()
+    ret = v1.list_namespaced_pod(namespace=kube_conf['namespace'])
+    pods = [{"pod_name": i.metadata.name, "pod_ip": i.status.pod_ip, "host_ip": i.status.host_ip, "status": i.status.phase , "restart_count": i.status.container_statuses[0].restart_count} for i in ret.items]
+    #print(pods)
+    return pods
