@@ -1,4 +1,4 @@
-FROM zong4/py37:v0.3
+FROM zong4/py37:v0.4
 WORKDIR /Bxework
 COPY bxework/ ./bxework
 COPY weixinapi/ ./weixinapi
