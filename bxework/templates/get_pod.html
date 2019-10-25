@@ -14,11 +14,11 @@
     <table id="dg" data-options="header:'#hh',singleSelect:true,border:false,fit:true,fitColumns:true,scrollbarSize:0">
         <thead>
             <tr>
-                <th data-options="field:'pod_name',width:80">Pod Name</th>
-                <th data-options="field:'pod_ip',width:100">Pod IP</th>
-                <th data-options="field:'host_ip',width:100">Host IP</th>
-                <th data-options="field:'restart_count',width:30,align:'right'">Restart count</th>
-                <th data-options="field:'status',width:80,align:'right'">Status</th>
+                <th data-options="field:'pod_name',width:80,resizable:true">Pod Name</th>
+                <th data-options="field:'pod_ip',width:100,resizable:true">Pod IP</th>
+                <th data-options="field:'host_ip',width:100,resizable:true">Host IP</th>
+                <th data-options="field:'restart_count',width:30,align:'right',resizable:true">Restart count</th>
+                <th data-options="field:'status',width:80,align:'right',resizable:true">Status</th>
             </tr>
         </thead>
     </table>
@@ -31,6 +31,7 @@
         var data = {{ pods|list|safe }};
 		$(function(){
 			$('#dg').datagrid({
+                fitColumns: true,
 				data: data
 			});
 		});
