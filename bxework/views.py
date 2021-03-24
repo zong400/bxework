@@ -23,8 +23,8 @@ def wx_callback():
         content, msg_type, touser, fromuser, create_time = wxcb.received_from_wx(get_args, request.data)
         print(content, msg_type, touser, create_time)
         if content == 'get.pod':
-            workwx.get_pods(True, fromuser)
-            return wxcb.reply_to_user('正在查询pods，请稍候', get_args)
+            #workwx.get_pods(True, fromuser)
+            return wxcb.EncryptMsg('正在查询pods，请稍候', get_args)
         else:
             print(content)
 

@@ -31,7 +31,7 @@ def received_from_wx(get_args, post_data):
     print(xml_content)
     return content, msg_type, touser, fromuser, create_time
 
-def reply_to_user(msg, get_args):
+def EncryptMsg(msg, get_args):
     wxcrypt = __get_wxcrypt()
     ret, xml = wxcrypt.EncryptMsg(msg, get_args['nonce'])
     if ret != 0:
