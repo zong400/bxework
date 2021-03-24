@@ -21,7 +21,10 @@ def wx_callback():
         return wxcb.verfiy_echo(get_args)
     if request.method == 'POST':
         content, msg_type, touser, create_time = wxcb.received_from_wx(get_args, request.data)
-        print(content, msg_type, touser, create_time)
+        # print(content, msg_type, touser, create_time)
+        if content == 'get.pod':
+            errcode, errmsg = workwx.get_pods(return_to_wx=True, touser)
+            print(errcode, errmsg)
         return content
 
 @app.route('/workwx/api/prom/traefikstatus')
