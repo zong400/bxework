@@ -5,7 +5,7 @@ from bxework.config import config
 from datacollect.promutil import promutil
 #from datacollect.redisdb import Redisdb
 #from weixinapi.weixin import Weixin
-from flask import request, render_template, 
+from flask import request, render_template
 import weixinapi.WXCallback as wxcb
 
 __conf = config()
@@ -21,7 +21,7 @@ def wx_callback():
         return wxcb.verfiy_echo(get_args)
     if request.method == 'POST':
         content, msg_type, touser, create_time = wxcb.received_from_wx(get_args, request.data)
-        # print(content, msg_type, touser, create_time)
+        print(content, msg_type, touser, create_time)
         if content == 'get.pod':
             pods = workwx.get_pods()
             xml = wxcb.reply_to_user('正在查询pods，请稍候', get_args)

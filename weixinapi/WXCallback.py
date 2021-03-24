@@ -27,6 +27,7 @@ def received_from_wx(get_args, post_data):
     msg_type = xml_tree.find('MsgType').text
     touser = xml_tree.find('ToUserName').text
     create_time = xml_tree.find('CreateTime').text
+    print(xml_content)
     return content, msg_type, touser, create_time
 
 def reply_to_user(msg, get_args):
