@@ -20,13 +20,11 @@ def wx_callback():
     if "echostr" in get_args:
         return wxcb.verfiy_echo(get_args)
     if request.method == 'POST':
-        content, msg_type, touser, create_time = wxcb.received_from_wx(get_args, request.data)
+        content, msg_type, touser, fromuser, create_time = wxcb.received_from_wx(get_args, request.data)
         print(content, msg_type, touser, create_time)
         if content == 'get.pod':
-            pods = workwx.get_pods()
-            xml = wxcb.reply_to_user('正在查询pods，请稍候', get_args)
-            for pod in pods:
-                pass
+            workwx.get_pods(True, fromuser)
+            return wxcb.reply_to_user('正在查询pods，请稍候', get_args)
         else:
             print(content)
 

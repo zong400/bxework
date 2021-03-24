@@ -26,13 +26,15 @@ def received_from_wx(get_args, post_data):
     content = xml_tree.find('Content').text
     msg_type = xml_tree.find('MsgType').text
     touser = xml_tree.find('ToUserName').text
+    fromuser = xml_tree.find('FromUserName').text
     create_time = xml_tree.find('CreateTime').text
     print(xml_content)
-    return content, msg_type, touser, create_time
+    return content, msg_type, touser, fromuser, create_time
 
 def reply_to_user(msg, get_args):
     wxcrypt = __get_wxcrypt()
     ret, xml = wxcrypt.EncryptMsg(msg, get_args['nonce'])
     if ret != 0:
         return 'Crypt error, code: {}'.format(ret)
+    print(xml)
     return xml
