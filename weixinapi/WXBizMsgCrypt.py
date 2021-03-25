@@ -148,13 +148,14 @@ class Prpcrypt:
         :return: 加密等到的字符串
         """
         # 16位随机字符串添加到明文开头，拼接明文字符串
-        text = self.get_random_str() + struct.pack("I", socket.htonl(len(text.encode()))) + text.encode() + receiveid.encode()
+        bytes = self.get_random_str().encode() + struct.pack("I", socket.htonl(len(text.encode()))) + text.encode() + receiveid.encode()
         # 使用自定义的填充方式对明文进行补位填充
-        text = PKCS7Encoder.encode(text)
+        pkcs7 = PKCS7Encoder()
+        bytes = pkcs7.encode(bytes)
         # 加密
         cryptor = AES.new(self.key, self.mode, self.iv)
         try:
-            ciphertext = cryptor.encrypt(text)
+            ciphertext = cryptor.encrypt(bytes)
             # 使用BASE64对加密后的字符串进行编码
             return ierror.WXBizMsgCrypt_OK, base64.b64encode(ciphertext).decode()
         except Exception as e:
@@ -196,7 +197,7 @@ class Prpcrypt:
         """
         rule = string.ascii_letters + string.digits
         str = random.sample(rule, 16)
-        return ''.join(str).encode()
+        return ''.join(str)
 
 
 class WXBizMsgCrypt(object):
