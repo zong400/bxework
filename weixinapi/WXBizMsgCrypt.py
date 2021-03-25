@@ -148,7 +148,7 @@ class Prpcrypt:
         :return: 加密等到的字符串
         """
         # 16位随机字符串添加到明文开头，拼接明文字符串
-        text = self.get_random_str().encode() + struct.pack("I", socket.htonl(len(text.encode()))) + text.encode() + receiveid.encode()
+        text = self.get_random_str() + struct.pack("I", socket.htonl(len(text.encode()))) + text.encode() + receiveid.encode()
         # 使用自定义的填充方式对明文进行补位填充
         text = PKCS7Encoder.encode(text)
         # 加密
@@ -156,7 +156,7 @@ class Prpcrypt:
         try:
             ciphertext = cryptor.encrypt(text)
             # 使用BASE64对加密后的字符串进行编码
-            return ierror.WXBizMsgCrypt_OK, base64.b64encode(ciphertext)
+            return ierror.WXBizMsgCrypt_OK, base64.b64encode(ciphertext).decode()
         except Exception as e:
             print(e)
             return ierror.WXBizMsgCrypt_EncryptAES_Error, None
