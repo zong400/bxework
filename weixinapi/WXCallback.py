@@ -49,7 +49,7 @@ def EncryptMsg(toUser, createTime, content, nonce):
        <CreateTime>{}</CreateTime>
        <MsgType><![CDATA[text]]></MsgType>
        <Content><![CDATA[{}]]></Content>
-    </xml>'''.format(toUser, createTime, content)
+    </xml>'''.format(toUser, createTime, content.encode())
     wxcrypt = __get_wxcrypt()
     ret, xml = wxcrypt.EncryptMsg(rDataXML, nonce)
     if ret != 0:
