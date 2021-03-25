@@ -148,7 +148,7 @@ class Prpcrypt:
         :return: 加密等到的字符串
         """
         # 16位随机字符串添加到明文开头，拼接明文字符串
-        text = self.get_random_str().encode() + struct.pack("I", socket.htonl(len(text.encode()))) + text.encode() + receiveid.encode()
+        text = self.get_random_str() + struct.pack("I", socket.htonl(len(text))) + text + receiveid
         # 使用自定义的填充方式对明文进行补位填充
         text = PKCS7Encoder.encode(text)
         # 加密
