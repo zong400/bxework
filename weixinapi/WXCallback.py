@@ -18,6 +18,16 @@ def verfiy_echo(get_args):
     return sReplyEchoStr
 
 def received_from_wx(get_args, post_data):
+    '''
+    接收消息解密后示例：b'<xml><ToUserName><![CDATA[ww521ad0239051c73b]]></ToUserName>
+                            <FromUserName><![CDATA[YangWeiZong]]></FromUserName>
+                            <CreateTime>1616579111</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[get.pod]]></Content>
+                            <MsgId>6943154417203579909</MsgId>
+                            <AgentID>1000002</AgentID>
+                            </xml>'
+    '''
     wxcrypt = __get_wxcrypt()
     ret, xml_content = wxcrypt.DecryptMsg(post_data, get_args['msg_signature'], get_args['timestamp'], get_args['nonce'])
     if ret != 0:
@@ -28,12 +38,20 @@ def received_from_wx(get_args, post_data):
     touser = xml_tree.find('ToUserName').text
     fromuser = xml_tree.find('FromUserName').text
     create_time = xml_tree.find('CreateTime').text
+    msgid = xml_tree.find('MsgId').text
     print(xml_content)
-    return content, msg_type, touser, fromuser, create_time
+    return content, msg_type, touser, fromuser, create_time, msgid
 
-def EncryptMsg(msg, get_args):
+def EncryptMsg(toUser, createTime, content, nonce):
+    rDataXML = '''<xml>
+       <ToUserName><![CDATA[{}]]></ToUserName>
+       <FromUserName><![CDATA[ww521ad0239051c73b]]></FromUserName> 
+       <CreateTime>{}</CreateTime>
+       <MsgType><![CDATA[text]]></MsgType>
+       <Content><![CDATA[{}]]></Content>
+    </xml>'''.format(toUser, createTime, content)
     wxcrypt = __get_wxcrypt()
-    ret, xml = wxcrypt.EncryptMsg(msg, get_args['nonce'])
+    ret, xml = wxcrypt.EncryptMsg(rDataXML, nonce)
     if ret != 0:
         return 'Crypt error, code: {}'.format(ret)
     print(xml)

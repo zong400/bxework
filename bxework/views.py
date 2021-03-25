@@ -7,6 +7,7 @@ from datacollect.promutil import promutil
 #from weixinapi.weixin import Weixin
 from flask import request, render_template
 import weixinapi.WXCallback as wxcb
+import time
 
 __conf = config()
 
@@ -20,11 +21,11 @@ def wx_callback():
     if "echostr" in get_args:
         return wxcb.verfiy_echo(get_args)
     if request.method == 'POST':
-        content, msg_type, touser, fromuser, create_time = wxcb.received_from_wx(get_args, request.data)
+        content, msg_type, touser, fromuser, create_time, msgid = wxcb.received_from_wx(get_args, request.data)
         print(content, msg_type, touser, create_time)
-        if content == 'get.pod':
+        if content == 'del pod':
             #workwx.get_pods(True, fromuser)
-            return wxcb.EncryptMsg('正在查询pods，请稍候', get_args)
+            return wxcb.EncryptMsg(touser, int(time.time() * 1000), '正在查询pods，请稍候', get_args['nonce'])
         else:
             print(content)
 
