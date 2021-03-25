@@ -27,7 +27,7 @@ def wx_callback():
             #workwx.get_pods(True, fromuser)
             return wxcb.EncryptMsg(touser, int(time.time() * 1000), '正在查询pods，请稍候', get_args['nonce'])
         else:
-            print(content)
+            return wxcb.EncryptMsg(touser, int(time.time() * 1000), content, get_args['nonce'])
 
 @app.route('/workwx/api/prom/traefikstatus')
 def reqrate():

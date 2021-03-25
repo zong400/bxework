@@ -51,8 +51,9 @@ def EncryptMsg(toUser, createTime, content, nonce):
        <Content><![CDATA[{}]]></Content>
     </xml>'''.format(toUser, createTime, content)
     wxcrypt = __get_wxcrypt()
-    ret, xml = wxcrypt.EncryptMsg(rDataXML, nonce)
+    ret, sEncryptMsg = wxcrypt.EncryptMsg(rDataXML, nonce)
     if ret != 0:
         return 'Crypt error, code: {}'.format(ret)
-    print(xml)
-    return xml
+    print('加密消息：%s' % sEncryptMsg)
+    # sEncryptMsg 加密消息，xml格式
+    return sEncryptMsg
