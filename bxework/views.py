@@ -5,13 +5,15 @@ from bxework.config import config
 from datacollect.promutil import promutil
 #from datacollect.redisdb import Redisdb
 #from weixinapi.weixin import Weixin
-from flask import request, render_template, g
+from flask import request, render_template, url_for, redirect
 import weixinapi.WXCallback as wxcb
+import time
 
 __conf = config()
 
 @app.route('/')
 def hello_world():
+    #workwx.del_pod('web-tbx-559ff8d4cf-swnv7')
     return 'Hello World!!!'
 
 @app.route('/workwx/api/callback', methods=['GET', 'POST'])
@@ -20,9 +22,18 @@ def wx_callback():
     if "echostr" in get_args:
         return wxcb.verfiy_echo(get_args)
     if request.method == 'POST':
-        content, msg_type, touser, create_time = wxcb.received_from_wx(get_args, request.data)
-        print(content, msg_type, touser, create_time)
-        return content
+        content, touser, fromuser, create_time = wxcb.received_from_wx(get_args, request.data)
+        commandStr = content.split(' ')[0]
+        if commandStr == 'del.pod':
+            argsStr = content.split(' ')[1]
+            rContent = workwx.del_pod(argsStr)
+        elif commandStr == 'get.pod':
+            argsStr = content.split(' ')[1]
+            url = __conf.domain + url_for('k8s_pod', deployname=argsStr)
+            rContent = '点击链接查看: <a href="%s">%s pods</a>' % (url, argsStr)
+        else:
+            rContent = content
+        return wxcb.EncryptMsg(fromuser, int(time.time() * 1000), rContent, get_args['nonce'])
 
 @app.route('/workwx/api/prom/traefikstatus')
 def reqrate():
@@ -82,10 +93,15 @@ def send_node_alert():
         return 'sunknow type of sendto.'
     return 'send to wx, errcode: {}'.format(errcode)
 
-@app.route('/workwx/api/k8s/pod', methods=['GET','POST'])
-def k8s_pod():
-    if request.method == 'GET':
-        pods = workwx.get_pods()
-        return render_template('get_pod.html', pods=pods)
-    if request.method == 'POST':
-        pass
+@app.route('/workwx/api/k8s/pod/<deployname>', methods=['GET'])
+def k8s_pod(deployname):
+    if deployname in ('muc', 'kq', 'notice', 'tbx', 'expense', 'enroll', 'clazzalbum', 'base'):
+        deployname = 'core-service-' + deployname
+    elif deployname == 'applet':
+        deployname = 'core-interactive-applet'
+    elif deployname == 'newsfeed':
+        deployname = 'sys-newsfeed-core'
+    elif deployname == 'pay':
+        deployname = 'sys-pay-core'
+    pods = workwx.get_pods(deployname)
+    return render_template('get_pod.html', pods=pods)

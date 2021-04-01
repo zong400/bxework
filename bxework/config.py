@@ -38,3 +38,7 @@ class config(object):
 
     def get_k8s_config(self):
         return self.__dsconfig['kubernetes']
+
+    @property
+    def domain(self):
+        return self.__config['domain']
