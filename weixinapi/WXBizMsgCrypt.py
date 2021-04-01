@@ -107,19 +107,19 @@ class PKCS7Encoder():
 
     block_size = 32
 
-    def encode(self, text):
+    def encode(self, abytes):
         """ 对需要加密的明文进行填充补位
         @param text: 需要进行填充补位操作的明文
         @return: 补齐明文字符串
         """
-        text_length = len(text)
+        bytes_length = len(abytes)
         # 计算需要填充的位数
-        amount_to_pad = self.block_size - (text_length % self.block_size)
+        amount_to_pad = self.block_size - (bytes_length % self.block_size)
         if amount_to_pad == 0:
             amount_to_pad = self.block_size
         # 获得补位所用的字符
-        pad = chr(amount_to_pad)
-        return text + pad * amount_to_pad
+        pad = chr(amount_to_pad).encode()
+        return abytes + pad * amount_to_pad
 
     def decode(self, decrypted):
         """删除解密后明文的补位字符
@@ -148,14 +148,14 @@ class Prpcrypt:
         :return: 加密等到的字符串
         """
         # 16位随机字符串添加到明文开头，拼接明文字符串
-        bytes = self.get_random_str().encode() + struct.pack("I", socket.htonl(len(text.encode()))) + text.encode() + receiveid.encode()
+        abytes = self.get_random_str().encode() + struct.pack('I', socket.htonl(len(text.encode()))) + text.encode() + receiveid.encode()
         # 使用自定义的填充方式对明文进行补位填充
         pkcs7 = PKCS7Encoder()
-        bytes = pkcs7.encode(bytes)
+        abytes = pkcs7.encode(abytes)
         # 加密
         cryptor = AES.new(self.key, self.mode, self.iv)
         try:
-            ciphertext = cryptor.encrypt(bytes)
+            ciphertext = cryptor.encrypt(abytes)
             # 使用BASE64对加密后的字符串进行编码
             return ierror.WXBizMsgCrypt_OK, base64.b64encode(ciphertext).decode()
         except Exception as e:

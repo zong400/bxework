@@ -2,7 +2,8 @@
 from bxework.config import config
 from weixinapi.weixin_msg import WeixinMsg
 from weixinapi.weixin import Weixin
-from kubernetes import client as kubeclient , config as kubeconfig
+from kubernetes import client as kubeclient, config as kubeconfig
+from kubernetes.client.rest import ApiException
 
 __conf = config()
 __corpid = __conf.get_wx_corpid()
@@ -170,20 +171,30 @@ def send_k8s_alert(msg, party='', users=''):
             errsum += errcode
     return errsum
 
-def get_pods(return_to_wx=False, wxuser=''):
+def get_pods(deployname='all'):
     kube_conf = __conf.get_k8s_config()
     kubeconfig.load_kube_config(config_file=kube_conf['kubeconfig'], context=kube_conf['context'])
     v1 = kubeclient.CoreV1Api()
     ret = v1.list_namespaced_pod(namespace=kube_conf['namespace'])
-    pods = [{"pod_name": i.metadata.name, "pod_ip": i.status.pod_ip, "host_ip": i.status.host_ip, "status": i.status.phase , "restart_count": i.status.container_statuses[0].restart_count} for i in ret.items]
-    #print(pods)
-    if return_to_wx:
-        wx = Weixin(corpid=__corpid, corpsecret=__k8s_secret, redis_pool=__conf.redis_pool)
-        wxmsg = WeixinMsg(wx)
-        for pod in pods:
-            wxmsg.send_txt_msg('pod name: %s, status: %s, restart_cnt: %s' % (pod['pod_name'], pod['status'], pod['restart_count']),
-                                __k8s_agentid, wxuser)
-        return 0
+    if deployname == 'all':
+        pods = [{"pod_name": i.metadata.name, "pod_ip": i.status.pod_ip, "host_ip": i.status.host_ip, "status": i.status.phase, "restart_count": i.status.container_statuses[0].restart_count} for i in ret.items]
     else:
-        return pods
+        pods = [{"pod_name": i.metadata.name, "pod_ip": i.status.pod_ip, "host_ip": i.status.host_ip, "status": i.status.phase, "restart_count": i.status.container_statuses[0].restart_count}
+            for i in list(filter(lambda m: m.metadata.name[:len(deployname)] == deployname, ret.items))]
+    return pods
 
+def del_pod(pod_name):
+    kube_conf = __conf.get_k8s_config()
+    kubeconfig.load_kube_config(config_file=kube_conf['kubeconfig'], context=kube_conf['context'])
+    v1 = kubeclient.CoreV1Api()
+    try:
+        res = v1.delete_namespaced_pod(pod_name, kube_conf['namespace'])
+        if not res.reason:
+            ret = 'delete成功'
+        else:
+            ret = res.reason
+    except ApiException as e:
+        ret = 'delete失败，原因：%s' % e.reason
+        print('k8s api出错，reason: %s, message: %s' % (e.reason, e.body))
+    finally:
+        return ret

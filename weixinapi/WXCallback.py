@@ -30,17 +30,19 @@ def received_from_wx(get_args, post_data):
     '''
     wxcrypt = __get_wxcrypt()
     ret, xml_content = wxcrypt.DecryptMsg(post_data, get_args['msg_signature'], get_args['timestamp'], get_args['nonce'])
+    # print(xml_content)
     if ret != 0:
         return 'Crypt error, code: {}'.format(ret)
     xml_tree = ET.fromstring(xml_content)
-    content = xml_tree.find('Content').text
     msg_type = xml_tree.find('MsgType').text
     touser = xml_tree.find('ToUserName').text
     fromuser = xml_tree.find('FromUserName').text
     create_time = xml_tree.find('CreateTime').text
-    msgid = xml_tree.find('MsgId').text
-    print(xml_content)
-    return content, msg_type, touser, fromuser, create_time, msgid
+    # msgid = xml_tree.find('MsgId').text
+    content = ''
+    if msg_type == 'text':
+        content = xml_tree.find('Content').text
+    return content, touser, fromuser, create_time
 
 def EncryptMsg(toUser, createTime, content, nonce):
     rDataXML = '''<xml>
@@ -54,6 +56,5 @@ def EncryptMsg(toUser, createTime, content, nonce):
     ret, sEncryptMsg = wxcrypt.EncryptMsg(rDataXML, nonce)
     if ret != 0:
         return 'Crypt error, code: {}'.format(ret)
-    print('加密消息：%s' % sEncryptMsg)
     # sEncryptMsg 加密消息，xml格式
     return sEncryptMsg
