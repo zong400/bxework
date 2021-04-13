@@ -171,6 +171,12 @@ def send_k8s_alert(msg, party='', users=''):
             errsum += errcode
     return errsum
 
+def check_auth(user):
+    if user in ('Zong', 'ethan'):
+        return True
+    else:
+        return False
+
 def get_pods(deployname='all'):
     kube_conf = __conf.get_k8s_config()
     kubeconfig.load_kube_config(config_file=kube_conf['kubeconfig'], context=kube_conf['context'])
