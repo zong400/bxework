@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block body %}
+<head>
+    <script src="//cdn.bootcss.com/echarts/4.2.1/echarts.min.js"></script>
+</head>
+<body>
+    {% if nodes_metrics %}
+    <div id="cpu_usage" style="width: 1000px;height:800px;"></div>
+    <script type="text/javascript">
+        var nodes_metrics = {{ nodes_metrics|safe }};
+        var cpu_chart = echarts.init(document.getElementById('cpu_usage'));
+        var option = {
+            title: {
+                text: '节点资源使用情况'
+            },
+            color: ['#006699', '#e5323e'],
+            tooltip: {},
+            legend: {
+                data:['cpu', 'memory']
+            },
+            dataset: {
+                dimensions: ['node_name', 'cpu', 'memory'],
+                source: nodes_metrics
+            },
+            xAxis: {},
+            yAxis: {type: 'category'},
+            series: [
+                { type: 'bar'},
+                { type: 'bar'}
+            ]
+        };
+        cpu_chart.setOption(option);
+    </script>
+    {% endif %}
+</body>
+{% endblock %}
