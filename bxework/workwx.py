@@ -1,4 +1,5 @@
 # coding = utf-8
+from functools import reduce
 from bxework.config import config
 from weixinapi.weixin_msg import WeixinMsg
 from weixinapi.weixin import Weixin
@@ -188,6 +189,58 @@ def get_pods(deployname='all'):
         pods = [{"pod_name": i.metadata.name, "pod_ip": i.status.pod_ip, "host_ip": i.status.host_ip, "status": i.status.phase, "restart_count": i.status.container_statuses[0].restart_count}
             for i in list(filter(lambda m: m.metadata.name[:len(deployname)] == deployname, ret.items))]
     return pods
+
+
+def top_pods(podname):
+    kube_conf = __conf.get_k8s_config()
+    kubeconfig.load_kube_config(config_file=kube_conf['kubeconfig'], context=kube_conf['context'])
+    cuObj = kubeclient.CustomObjectsApi()
+    try:
+        resp = cuObj.list_namespaced_custom_object('metrics.k8s.io', 'v1beta1', kube_conf['namespace'], 'pods')
+        # 筛选符合podname的数据
+        pods = list(filter(lambda pod: podname in pod['metadata']['name'], resp['items']))
+        if not pods:
+            return '%s 没有找到' % podname
+        # 扁平化数据结构
+        pods = list(map(lambda i: {'pod_name': i['metadata']['name'], 'container_metrics': i['containers']}, pods))
+        # 扁平化数组里面每个usage的数据结构
+        for pod in pods:
+            pod['container_metrics'] = list(map(lambda i: {'name': i['name'], 'cpu': format_top_data(i['usage']['cpu'], 'cpu'), 'memory': format_top_data(i['usage']['memory'], 'memory')}, pod['container_metrics']))
+            if len(pod['container_metrics']) > 1:
+                pod['total_cpu'] = reduce(lambda a, b: a['cpu'] + b['cpu'], pod['container_metrics'])
+                pod['total_mem'] = reduce(lambda a, b: a['memory'] + b['memory'], pod['container_metrics'])
+            elif len(pod['container_metrics']) == 1:
+                pod['total_cpu'] = pod['container_metrics'][0]['cpu']
+                pod['total_mem'] = pod['container_metrics'][0]['memory']
+    except ApiException as e:
+        print('k8s api出错，reason: %s, message: %s' % (e.reason, e.body))
+    finally:
+        return pods
+
+
+def format_top_data(input, type):
+    if type == 'cpu':
+        result = round(int(input.replace('n', '')) / 1000000)
+    elif type == 'memory':
+        result = round(int(input.replace('Ki', '')) / 1024)
+    return result
+
+
+def top_nodes():
+    '''
+    return: {'node_name': 'node1', 'cpu': 23, 'memory': 3442} cpu单位m，memory单位Mi
+    '''
+    kube_conf = __conf.get_k8s_config()
+    kubeconfig.load_kube_config(config_file=kube_conf['kubeconfig'], context=kube_conf['context'])
+    cuObj = kubeclient.CustomObjectsApi()
+    try:
+        resp = cuObj.list_cluster_custom_object('metrics.k8s.io', 'v1beta1', 'nodes')
+        nodes_metrics = list(map(lambda n: {'node_name': n['metadata']['name'], 'cpu': format_top_data(n['usage']['cpu'], 'cpu'), 'memory': format_top_data(n['usage']['memory'], 'memory')}, resp['items']))
+    except ApiException as e:
+        print('k8s api出错，reason: %s, message: %s' % (e.reason, e.body))
+    finally:
+        return nodes_metrics
+
 
 def del_pod(pod_name):
     kube_conf = __conf.get_k8s_config()

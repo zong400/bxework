@@ -5,7 +5,7 @@ from bxework.config import config
 from datacollect.promutil import promutil
 #from datacollect.redisdb import Redisdb
 #from weixinapi.weixin import Weixin
-from flask import request, render_template, url_for, redirect
+from flask import request, render_template, url_for
 import weixinapi.WXCallback as wxcb
 import time
 
@@ -13,7 +13,7 @@ __conf = config()
 
 @app.route('/')
 def hello_world():
-    #workwx.del_pod('web-tbx-559ff8d4cf-swnv7')
+    #workwx.top_pods('web-tbx')
     return 'Hello World!!!'
 
 @app.route('/workwx/api/callback', methods=['GET', 'POST'])
@@ -31,6 +31,9 @@ def wx_callback():
             argsStr = content.split(' ')[1]
             url = __conf.domain + url_for('k8s_pod', deployname=argsStr)
             rContent = '点击链接查看: <a href="%s">%s pods</a>' % (url, argsStr)
+        elif commandStr == 'top.pod':
+            argsStr = content.split(' ')[1]
+            rContent = ''.join(map(lambda s: 'Pod name: {}, cpu: {}m, memory: {}Mi \n'.format(s['pod_name'], s['total_cpu'], s['total_mem']), workwx.top_pods(argsStr)))
         else:
             rContent = content
         return wxcb.EncryptMsg(fromuser, int(time.time() * 1000), rContent, get_args['nonce'])
@@ -105,3 +108,9 @@ def k8s_pod(deployname):
         deployname = 'sys-pay-core'
     pods = workwx.get_pods(deployname)
     return render_template('get_pod.html', pods=pods)
+
+@app.route('/workwx/api/k8s/top/nodes')
+def k8s_top_node():
+    nodes_metrics = workwx.top_nodes()
+    #node_names, node_cpus, node_mems = zip(*[(me['node_name'], me['cpu'], me['memory']) for me in nodes_metrics])
+    return render_template('top_nodes.html', nodes_metrics=nodes_metrics)
