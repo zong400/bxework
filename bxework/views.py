@@ -114,3 +114,8 @@ def k8s_top_node():
     nodes_metrics = workwx.top_nodes()
     #node_names, node_cpus, node_mems = zip(*[(me['node_name'], me['cpu'], me['memory']) for me in nodes_metrics])
     return render_template('top_nodes.html', nodes_metrics=nodes_metrics)
+
+@app.route('/workwx/api/k8s/dojstack/<podname>', methods=['GET'])
+def k8s_pod_jstack(podname):
+    result = workwx.do_jstat(podname)
+    return result
