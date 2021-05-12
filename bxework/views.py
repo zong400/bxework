@@ -117,6 +117,6 @@ def k8s_top_node():
 
 @app.route('/workwx/api/k8s/dojstack/<podname>', methods=['GET'])
 def k8s_pod_jstack(podname):
-    workwx.do_jstat(podname)
     workwx.arthas(podname, "thread -n 5;thread -b")
+    # workwx.do_jstack(podname)
     return "done"

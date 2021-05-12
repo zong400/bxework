@@ -363,7 +363,7 @@ def do_exec(pod_name, exec_cmd):
         return None
 
 
-def do_jstat(pod_name):
+def do_jstack(pod_name):
     exec_command = [
         "/bin/sh",
         "-c",
