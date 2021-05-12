@@ -377,3 +377,18 @@ def do_jstat(pod_name):
         return {"status": 0, "msg": "ok"}
     else:
         return {"status": 1, "msg": "fail"}
+
+
+def arthas(pod_name, command):
+    exec_command = [
+        "/bin/sh",
+        "-c",
+        "JPID=`ps|grep jar|grep -v tini|grep -v grep|awk {'print $1'}` && java -jar arthas/arthas-boot.jar -c '%s' $JPID" % command
+    ]
+    result = do_exec(pod_name, exec_command)
+    if result:
+        mail = email()
+        mail.send_mail('%s 的arthas分析结果' % pod_name, result)
+        return {"status": 0, "msg": "ok"}
+    else:
+        return {"status": 1, "msg": "fail"}
