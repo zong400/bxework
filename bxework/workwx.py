@@ -7,6 +7,7 @@ from bxework.emailsender import email
 from kubernetes import client as kubeclient, config as kubeconfig
 from kubernetes.client.rest import ApiException
 from kubernetes.stream import stream
+from bxework.kafkaclient import kafkaclient
 
 
 __conf = config()
@@ -392,3 +393,16 @@ def arthas(pod_name, command):
         return {"status": 0, "msg": "ok"}
     else:
         return {"status": 1, "msg": "fail"}
+
+
+def send_warn_to_kafka(waring):
+    """
+    发告警信息到kafka
+    :param warings:
+    :return:
+    """
+    kafka = kafkaclient(['10.22.0.18:9092'])
+    # res = kafka.send('k8swarning', {"node": "node4", "status": "not ready", "message": "node offline"})
+    res = kafka.send('k8swarning', waring)
+        #logging.debug('send waring to kafka ' + res)
+    #logging.info('send to kafka complete.')

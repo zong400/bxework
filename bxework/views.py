@@ -1,5 +1,4 @@
 # coding=utf-8
-
 from bxework import app, workwx
 from bxework.config import config
 from datacollect.promutil import promutil
@@ -8,6 +7,7 @@ from datacollect.promutil import promutil
 from flask import request, render_template, url_for
 import weixinapi.WXCallback as wxcb
 import time
+from datetime import datetime
 
 __conf = config()
 
@@ -119,4 +119,16 @@ def k8s_top_node():
 def k8s_pod_jstack(podname):
     workwx.arthas(podname, "thread -n 5;thread -b")
     # workwx.do_jstack(podname)
+    return "done"
+
+@app.route('/workwx/api/alarm', methods=['POST'])
+def send_alarm_to_EIT():
+    msg = request.get_data(as_text=True)
+    alarm = {
+                "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "type": "hadoop",
+                "name": "hadoop",
+                "massage": msg,
+            }
+    workwx.send_warn_to_kafka(alarm)
     return "done"
