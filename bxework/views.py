@@ -9,6 +9,7 @@ import weixinapi.WXCallback as wxcb
 import time
 from datetime import datetime
 
+
 __conf = config()
 
 @app.route('/')
@@ -132,3 +133,9 @@ def send_alarm_to_EIT():
             }
     workwx.send_warn_to_kafka(alarm)
     return "done"
+
+@app.route('/workwx/api/sleep/<sec>', method='GET')
+def sleeping(sec):
+    time.sleep(sec)
+    return f'sleep {sec} seconds'
+
