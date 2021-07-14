@@ -136,6 +136,6 @@ def send_alarm_to_EIT():
 
 @app.route('/workwx/api/sleep/<sec>', methods=['GET'])
 def sleeping(sec):
-    time.sleep(sec)
+    time.sleep(int(sec))
     return f'sleep {sec} seconds'
 
