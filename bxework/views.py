@@ -134,7 +134,7 @@ def send_alarm_to_EIT():
     workwx.send_warn_to_kafka(alarm)
     return "done"
 
-@app.route('/workwx/api/sleep/<sec>', method=['GET'])
+@app.route('/workwx/api/sleep/<sec>', methods=['GET'])
 def sleeping(sec):
     time.sleep(sec)
     return f'sleep {sec} seconds'
