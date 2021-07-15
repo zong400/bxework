@@ -7,7 +7,8 @@ from datacollect.promutil import promutil
 from flask import request, render_template, url_for
 import weixinapi.WXCallback as wxcb
 import time
-from datetime import datetime
+from datetime import date, datetime
+import requests
 
 
 __conf = config()
@@ -138,4 +139,11 @@ def send_alarm_to_EIT():
 def sleeping(sec):
     time.sleep(int(sec))
     return f'sleep {sec} seconds'
+
+@app.route('/workwx/api/baidu')
+def pic():
+    t1 = datetime.now()
+    resp = requests.get('http://www.baidu.com')
+    t2 = datetime.now()
+    return '{}'.format(t2-t1)
 
