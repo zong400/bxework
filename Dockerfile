@@ -6,6 +6,7 @@ RUN apk add --no-cache tzdata \
     && echo "Asia/Shanghai" > /etc/timezone
 ENV TZ Asia/Shanghai
 
+WORKDIR /Bxework
 COPY bxework/ ./bxework
 COPY weixinapi/ ./weixinapi
 COPY datacollect/ ./datacollect
