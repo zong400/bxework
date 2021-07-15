@@ -10,8 +10,8 @@ import time
 from datetime import date, datetime
 import requests
 import random
-
-
+import base64
+ 
 __conf = config()
 
 @app.route('/')
@@ -157,4 +157,5 @@ def baidu():
 @app.route('/workwx/api/getpic')
 def pic():
     resp = requests.get('https://bxe-1255477954.cos.ap-beijing.myqcloud.com/resouce/share-homework.png')
-    return 'done'
+    png = resp.content
+    return base64.encodebytes(png)
