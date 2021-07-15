@@ -148,9 +148,13 @@ def sleepr():
     return f'sleep {i} seconds'
 
 @app.route('/workwx/api/baidu')
-def pic():
+def baidu():
     t1 = datetime.now()
     resp = requests.get('http://www.baidu.com')
     t2 = datetime.now()
     return '{}'.format(t2-t1)
 
+@app.route('/workwx/api/getpic')
+def pic():
+    resp = requests.get('https://bxe-1255477954.cos.ap-beijing.myqcloud.com/resouce/share-homework.png')
+    return 'done'
