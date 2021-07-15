@@ -1,4 +1,4 @@
-FROM alpine:3.11
+FROM alpine:3.12
 RUN apk add --no-cache python3 py3-pip py3-gunicorn py3-gevent py3-pycryptodome py3-flask py3-requests py3-redis
 RUN pip install kubernetes kafka-python
 RUN apk add --no-cache tzdata \
