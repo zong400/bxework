@@ -9,6 +9,7 @@ import weixinapi.WXCallback as wxcb
 import time
 from datetime import date, datetime
 import requests
+import random
 
 
 __conf = config()
@@ -139,6 +140,12 @@ def send_alarm_to_EIT():
 def sleeping(sec):
     time.sleep(int(sec))
     return f'sleep {sec} seconds'
+
+@app.route('/workwx/api/sleep/random')
+def sleepr():
+    i = random.randint(1, 10)/10
+    time.sleep(i)
+    return f'sleep {i} seconds'
 
 @app.route('/workwx/api/baidu')
 def pic():
