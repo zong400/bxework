@@ -8,12 +8,14 @@ from kubernetes import client as kubeclient, config as kubeconfig
 from kubernetes.client.rest import ApiException
 from kubernetes.stream import stream
 from bxework.kafkaclient import kafkaclient
+import json
 
 
 __conf = config()
 __corpid = __conf.get_wx_corpid()
 __k8s_secret = __conf.get_wx_app_secretid()
 __k8s_agentid = __conf.get_wx_app_agentid()
+deploynames = ('muc', 'kq', 'notice', 'tbx', 'expense', 'enroll', 'clazzalbum', 'base', 'applet', 'pay', 'newsfeed')
 
 
 def warning_status(status):
@@ -196,6 +198,20 @@ def check_auth(user):
         return False
 
 
+def _full_deployment_name(shortname):
+    if shortname in deploynames:
+        if shortname in ('muc', 'kq', 'notice', 'tbx', 'expense', 'enroll', 'clazzalbum', 'base'):
+            return 'core-service-' + shortname
+        elif shortname == 'applet':
+            return 'core-interactive-applet'
+        elif shortname == 'newsfeed':
+            return 'sys-newsfeed-core'
+        elif shortname == 'pay':
+            return 'sys-pay-core'
+    else:
+        return shortname
+
+
 def get_pods(deployname='all'):
     kube_conf = __conf.get_k8s_config()
     kubeconfig.load_kube_config(
@@ -214,7 +230,7 @@ def get_pods(deployname='all'):
             }
             for i in ret.items
         ]
-    else:
+    elif deployname in deploynames:
         pods = [
             {
                 "pod_name": i.metadata.name,
@@ -339,6 +355,27 @@ def del_pod(pod_name):
         print('k8s api出错，reason: %s, message: %s' % (e.reason, e.body))
     finally:
         return ret
+
+
+def scale_deploy(deployname, podnum):
+    if deployname:
+        deployname = _full_deployment_name(deployname)
+        kube_conf = __conf.get_k8s_config()
+        kubeconfig.load_kube_config(
+            config_file=kube_conf['kubeconfig'], context=kube_conf['context']
+        )
+        v1 = kubeclient.AppsV1Api()
+        try:
+            body = json.loads('{"spec": {"replicas": %s} }' % podnum)
+            res = v1.patch_namespaced_deployment(name=deployname, namespace=kube_conf['namespace'], body=body)
+            ret = f"{deployname} replicas={res.spec.replicas}"
+        except ApiException as e:
+            ret = 'scale失败，原因：%s' % e.reason
+            print('k8s api出错，reason: %s, message: %s' % (e.reason, e.body))
+        finally:
+            return ret
+    else:
+        return 'deploy name 错误。'
 
 
 def do_exec(pod_name, exec_cmd):

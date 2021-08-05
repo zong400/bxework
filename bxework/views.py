@@ -7,10 +7,8 @@ from datacollect.promutil import promutil
 from flask import request, render_template, url_for
 import weixinapi.WXCallback as wxcb
 import time
-from datetime import date, datetime
-import requests
-import random
-import base64
+from datetime import datetime
+
  
 __conf = config()
 
@@ -37,6 +35,14 @@ def wx_callback():
         elif commandStr == 'top.pod':
             argsStr = content.split(' ')[1]
             rContent = ''.join(map(lambda s: 'Pod name: {}, cpu: {}m, memory: {}Mi \n'.format(s['pod_name'], s['total_cpu'], s['total_mem']), workwx.top_pods(argsStr)))
+        elif commandStr == 'scale':
+            argsStr = content.split(' ')[1:]
+            rContent = workwx.scale_deploy(*argsStr)
+        elif commandStr == 'help':
+            rContent = """删除（重启）pod：del.pod podname
+            查看pod: get.pod deployname, 可以简写例如：'muc', 'kq', 'notice', 'tbx', 'expense', 'enroll', 'clazzalbum', 'base', 'applet', 'pay', 'newsfeed'
+            查看pod资源：top.pod podname
+            调整deployment的replicas（加减pod数）：scale deployname number, 例：scale muc 4"""
         else:
             rContent = content
         return wxcb.EncryptMsg(fromuser, int(time.time() * 1000), rContent, get_args['nonce'])
@@ -135,27 +141,3 @@ def send_alarm_to_EIT():
             }
     workwx.send_warn_to_kafka(alarm)
     return "done"
-
-@app.route('/workwx/api/sleep/<sec>', methods=['GET'])
-def sleeping(sec):
-    time.sleep(int(sec))
-    return f'sleep {sec} seconds'
-
-@app.route('/workwx/api/sleep/random')
-def sleepr():
-    i = random.randint(1, 10)/10
-    time.sleep(i)
-    return f'sleep {i} seconds'
-
-@app.route('/workwx/api/baidu')
-def baidu():
-    t1 = datetime.now()
-    resp = requests.get('http://www.baidu.com')
-    t2 = datetime.now()
-    return '{}'.format(t2-t1)
-
-@app.route('/workwx/api/getpic')
-def pic():
-    resp = requests.get('https://bxe-1255477954.cos.ap-beijing.myqcloud.com/resouce/share-homework.png')
-    png = resp.content
-    return base64.encodebytes(png)
