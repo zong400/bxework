@@ -4,9 +4,10 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/re
     && ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone
 ENV TZ Asia/Shanghai
-RUN pip install -i http://mirrors.tencentyun.com/pypi/simple -r requirements.txt
 
 WORKDIR /Bxework
+COPY requirements.txt requirements.txt
+RUN pip install -i http://mirrors.tencentyun.com/pypi/simple -r requirements.txt
 COPY bxework/ ./bxework
 COPY weixinapi/ ./weixinapi
 COPY datacollect/ ./datacollect
