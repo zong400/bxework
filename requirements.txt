@@ -1,0 +1,8 @@
+Flask>=2.0.1
+kubernetes=17.17.0
+PyYAML
+redis
+requests
+kafka-python=2.0.2
+gunicorn=20.1.0
+pycryptodome>=3.10.1
