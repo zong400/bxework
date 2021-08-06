@@ -1,6 +1,6 @@
 FROM python:3.7.11-alpine
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
-    && apk add --no-cache tzdata \
+    && apk add --no-cache tzdata gcc libc-dev \
     && ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone
 ENV TZ Asia/Shanghai
