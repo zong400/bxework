@@ -1,9 +1,10 @@
 FROM python:3.7.11-alpine
-RUN apk add --no-cache tzdata \
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
+    && apk add --no-cache tzdata \
     && ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone
 ENV TZ Asia/Shanghai
-RUN pip install -r requirements.txt
+RUN pip install -i http://mirrors.tencentyun.com/pypi/simple -r requirements.txt
 
 WORKDIR /Bxework
 COPY bxework/ ./bxework
