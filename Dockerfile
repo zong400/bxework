@@ -7,7 +7,7 @@ ENV TZ Asia/Shanghai
 
 WORKDIR /Bxework
 COPY requirements.txt requirements.txt
-RUN pip install -i http://mirrors.tencentyun.com/pypi/simple -r requirements.txt
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 COPY bxework/ ./bxework
 COPY weixinapi/ ./weixinapi
 COPY datacollect/ ./datacollect
