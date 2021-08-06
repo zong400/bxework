@@ -1,4 +1,4 @@
-FROM FROM python:3.7.11-alpine
+FROM python:3.7.11-alpine
 RUN apk add --no-cache tzdata \
     && ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone
