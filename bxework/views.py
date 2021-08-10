@@ -39,10 +39,8 @@ def wx_callback():
             argsStr = content.split(' ')[1:]
             rContent = workwx.scale_deploy(*argsStr)
         elif commandStr == 'help':
-            rContent = """删除（重启）pod：del.pod podname
-            查看pod: get.pod deployname, 可以简写例如：'muc', 'kq', 'notice', 'tbx', 'expense', 'enroll', 'clazzalbum', 'base', 'applet', 'pay', 'newsfeed'
-            查看pod资源：top.pod podname
-            调整deployment的replicas（加减pod数）：scale deployname number, 例：scale muc 4"""
+            url = __conf.domain + '/static/help.html'
+            rContent = '点击链接查看：<a href="%s">help</a>' % url
         else:
             rContent = content
         return wxcb.EncryptMsg(fromuser, int(time.time() * 1000), rContent, get_args['nonce'])
