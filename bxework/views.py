@@ -9,7 +9,6 @@ import weixinapi.WXCallback as wxcb
 import time
 from datetime import datetime
 
- 
 __conf = config()
 
 @app.route('/')
@@ -24,23 +23,24 @@ def wx_callback():
         return wxcb.verfiy_echo(get_args)
     if request.method == 'POST':
         content, touser, fromuser, create_time = wxcb.received_from_wx(get_args, request.data)
-        commandStr = content.split(' ')[0]
-        if commandStr == 'del.pod':
-            argsStr = content.split(' ')[1]
-            rContent = workwx.del_pod(argsStr)
-        elif commandStr == 'get.pod':
-            argsStr = content.split(' ')[1]
-            url = __conf.domain + url_for('k8s_pod', deployname=argsStr)
-            rContent = '点击链接查看: <a href="%s">%s pods</a>' % (url, argsStr)
-        elif commandStr == 'top.pod':
-            argsStr = content.split(' ')[1]
-            rContent = ''.join(map(lambda s: 'Pod name: {}, cpu: {}m, memory: {}Mi \n'.format(s['pod_name'], s['total_cpu'], s['total_mem']), workwx.top_pods(argsStr)))
-        elif commandStr == 'scale':
-            argsStr = content.split(' ')[1:]
-            rContent = workwx.scale_deploy(*argsStr)
-        elif commandStr == 'help':
-            url = __conf.domain + '/static/help.html'
-            rContent = '点击链接查看：<a href="%s">help</a>' % url
+        if fromuser in __conf.k8s_opt:
+            commandStr = content.split(' ')[0]
+            if commandStr == 'del.pod':
+                argsStr = content.split(' ')[1]
+                rContent = workwx.del_pod(argsStr)
+            elif commandStr == 'get.pod':
+                argsStr = content.split(' ')[1]
+                url = __conf.domain + url_for('k8s_pod', deployname=argsStr)
+                rContent = '点击链接查看: <a href="%s">%s pods</a>' % (url, argsStr)
+            elif commandStr == 'top.pod':
+                argsStr = content.split(' ')[1]
+                rContent = ''.join(map(lambda s: 'Pod name: {}, cpu: {}m, memory: {}Mi \n'.format(s['pod_name'], s['total_cpu'], s['total_mem']), workwx.top_pods(argsStr)))
+            elif commandStr == 'scale':
+                argsStr = content.split(' ')[1:]
+                rContent = workwx.scale_deploy(*argsStr)
+            elif commandStr == 'help':
+                url = __conf.domain + '/static/help.html'
+                rContent = '点击链接查看：<a href="%s">help</a>' % url
         else:
             rContent = f'你好 {fromuser}, {content}'
         return wxcb.EncryptMsg(fromuser, int(time.time() * 1000), rContent, get_args['nonce'])
