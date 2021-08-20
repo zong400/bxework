@@ -41,6 +41,8 @@ def wx_callback():
             elif commandStr == 'help':
                 url = __conf.domain + '/static/help.html'
                 rContent = '点击链接查看：<a href="%s">help</a>' % url
+            else:
+                rContent = f'你好 {fromuser}, {content}'
         else:
             rContent = f'你好 {fromuser}, {content}'
         return wxcb.EncryptMsg(fromuser, int(time.time() * 1000), rContent, get_args['nonce'])
