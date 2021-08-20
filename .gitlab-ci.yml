@@ -6,13 +6,23 @@ build_job:
   stage: build_docker
   only:
     - tags
-    - /^develop-.*$/
+    - /^dev-.*$/
   script:
     - buildah bud -t $CI_PROJECT_NAME:$CI_BUILD_REF_NAME .
     - buildah push $CI_PROJECT_NAME:$CI_BUILD_REF_NAME docker://registry.bxr.cn/$CI_PROJECT_NAME:$CI_BUILD_REF_NAME
     - buildah rmi $CI_PROJECT_NAME:$CI_BUILD_REF_NAME
   tags:
     - buildimg
+
+deploy_dev_job:
+  stage: deploy_to_k8s
+  only:
+    - /^dev-.*$/
+  script:
+    - kubectl config use-context bxr-dev
+    - kubectl set image deployment/$CI_PROJECT_NAME $CI_PROJECT_NAME=registry.bxr.cn/$CI_PROJECT_NAME:$CI_BUILD_REF_NAME
+  tags:
+    - deploy_k8s
 
 deploy_pro_job:
   stage: deploy_to_k8s
