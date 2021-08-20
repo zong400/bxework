@@ -42,3 +42,7 @@ class config(object):
     @property
     def domain(self):
         return self.__config['domain']
+
+    @property
+    def k8s_opt(self):
+        return self.__config['k8sopt']
