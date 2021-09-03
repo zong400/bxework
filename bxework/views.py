@@ -38,6 +38,9 @@ def wx_callback():
             elif commandStr == 'scale':
                 argsStr = content.split(' ')[1:]
                 rContent = workwx.scale_deploy(*argsStr)
+            elif commandStr == 'login.num':
+                argsStr = content.split(' ')[1]
+                rContent = workwx.set_zk('/wbyb/testzk/bjb.login.num', argsStr)
             elif commandStr == 'help':
                 url = __conf.domain + '/static/help.html'
                 rContent = '点击链接查看：<a href="%s">help</a>' % url
@@ -141,9 +144,3 @@ def send_alarm_to_EIT():
             }
     workwx.send_warn_to_kafka(alarm)
     return "done"
-
-@app.route('/workwx/api/zk/set', methods=['POST'])
-def set_zk():
-    keyvalue = request.get_data(as_text=True)
-    key, value = keyvalue.split(":")
-    workwx.set_zk(key, value)

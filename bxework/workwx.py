@@ -435,7 +435,7 @@ def arthas(pod_name, command):
 def set_zk(key, value):
     exec_command = ["/bin/sh", "-c", f"bin/zkCli.sh -server localhost:2181 set {key} {value}"]
     result = do_exec("zk3-k8s-node4.bxr.cn", exec_command)
-    return result
+    return "done"
 
 
 def send_warn_to_kafka(waring):
