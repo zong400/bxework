@@ -22,8 +22,8 @@ def wx_callback():
     if "echostr" in get_args:
         return wxcb.verfiy_echo(get_args)
     if request.method == 'POST':
-        content, touser, fromuser, create_time = wxcb.received_from_wx(get_args, request.data)
-        if fromuser in __conf.k8s_opt:
+        msg_type, content, touser, fromuser, create_time = wxcb.received_from_wx(get_args, request.data)
+        if fromuser in __conf.k8s_opt and msg_type == 'text':
             commandStr = content.split(' ')[0]
             if commandStr == 'del.pod':
                 argsStr = content.split(' ')[1]
@@ -38,14 +38,15 @@ def wx_callback():
             elif commandStr == 'scale':
                 argsStr = content.split(' ')[1:]
                 rContent = workwx.scale_deploy(*argsStr)
-            elif commandStr == 'login.num':
-                argsStr = content.split(' ')[1]
-                rContent = workwx.set_zk('/wbyb/testzk/bjb.login.num', argsStr)
             elif commandStr == 'help':
                 url = __conf.domain + '/static/help.html'
                 rContent = '点击链接查看：<a href="%s">help</a>' % url
             else:
                 rContent = f'你好 {fromuser}, {content}'
+        elif fromuser in __conf.k8s_opt and msg_type == 'event':
+            commandStr, argsStr = content.split('=')
+            if commandStr == 'login.num':
+                rContent = workwx.set_zk(commandStr, argsStr)
         else:
             rContent = f'你好 {fromuser}, {content}'
         return wxcb.EncryptMsg(fromuser, int(time.time() * 1000), rContent, get_args['nonce'])
