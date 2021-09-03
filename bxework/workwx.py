@@ -433,7 +433,7 @@ def arthas(pod_name, command):
 
 
 def set_zk(key, value):
-    exec_command = ["/bin/sh", "-c", f"bin/zkCli.sh -server localhost:2181 set {key} {value}"]
+    exec_command = ["/bin/sh", "-c", f"bin/zkCli.sh -server localhost:2181 set /wbyb/{key} {value}"]
     result = do_exec("zk3-k8s-node4.bxr.cn", exec_command)
     return "done"
 
