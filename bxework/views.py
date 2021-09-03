@@ -38,6 +38,12 @@ def wx_callback():
             elif commandStr == 'scale':
                 argsStr = content.split(' ')[1:]
                 rContent = workwx.scale_deploy(*argsStr)
+            elif commandStr == 'login.num':
+                argsStr = content.split(' ')[1]
+                rContent = workwx.set_zk('/wbyb/common/bjb.login.num', argsStr)
+            elif commandStr == 'login.key':
+                argsStr = content.split(' ')[1]
+                rContent = workwx.set_zk('/wbyb/common/bjb.login.prKey', argsStr)
             elif commandStr == 'help':
                 url = __conf.domain + '/static/help.html'
                 rContent = '点击链接查看：<a href="%s">help</a>' % url
