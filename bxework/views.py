@@ -142,7 +142,8 @@ def send_alarm_to_EIT():
     workwx.send_warn_to_kafka(alarm)
     return "done"
 
-@app.route('/workwx/api/zk/set/<keyvalue>', methods=['GET'])
-def set_zk(keyvalue):
+@app.route('/workwx/api/zk/set', methods=['POST'])
+def set_zk():
+    keyvalue = request.get_data(as_text=True)
     key, value = keyvalue.split(":")
     workwx.set_zk(key, value)
