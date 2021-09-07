@@ -7,6 +7,7 @@ from datacollect.promutil import promutil
 from flask import request, render_template, url_for
 import weixinapi.WXCallback as wxcb
 import time
+import random
 from datetime import datetime
 
 __conf = config()
@@ -42,8 +43,8 @@ def wx_callback():
                 argsStr = content.split(' ')[1]
                 rContent = workwx.set_zk('/wbyb/common/bjb.login.num', argsStr)
             elif commandStr == 'login.key':
-                argsStr = content.split(' ')[1]
-                rContent = workwx.set_zk('/wbyb/common/bjb.login.prKey', argsStr)
+                key = "".join(random.sample('zyxwvutsrqponmlkjihgfedcba0123456789', 3))
+                rContent = workwx.set_zk('/wbyb/common/bjb.login.prKey', key)
             elif commandStr == 'help':
                 url = __conf.domain + '/static/help.html'
                 rContent = '点击链接查看：<a href="%s">help</a>' % url
@@ -53,7 +54,12 @@ def wx_callback():
             print(f"key is :{content}\n")
             commandStr, argsStr = content.split('=')
             if commandStr == 'login.num':
-                rContent = workwx.set_zk(commandStr, argsStr)
+                workwx.set_zk('/wbyb/testzk/bjb.login.num', argsStr)
+                rContent = f"set login num to {argsStr}"
+            if commandStr == 'login.key':
+                key = "".join(random.sample('zyxwvutsrqponmlkjihgfedcba0123456789', 3))
+                workwx.set_zk('/wbyb/testzk/bjb.login.prKey', key)
+                rContent = f"set login key to {key}"
         else:
             rContent = f'你好 {fromuser}, {content}'
         return wxcb.EncryptMsg(fromuser, int(time.time() * 1000), rContent, get_args['nonce'])
