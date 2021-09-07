@@ -42,9 +42,11 @@ def wx_callback():
             elif commandStr == 'login.num':
                 argsStr = content.split(' ')[1]
                 rContent = workwx.set_zk('/wbyb/common/bjb.login.num', argsStr)
+                print(f"{fromuser} set login num to :{argsStr}\n")
             elif commandStr == 'login.key':
                 key = "".join(random.sample('zyxwvutsrqponmlkjihgfedcba0123456789', 3))
                 rContent = workwx.set_zk('/wbyb/common/bjb.login.prKey', key)
+                print(f"{fromuser} set login key to :{key}\n")
             elif commandStr == 'help':
                 url = __conf.domain + '/static/help.html'
                 rContent = '点击链接查看：<a href="%s">help</a>' % url
@@ -52,9 +54,8 @@ def wx_callback():
                 rContent = f'你好 {fromuser}, {content}'
         elif fromuser in __conf.k8s_opt and msg_type == 'event':
             print(f"{fromuser} set :{content}\n")
-            commandStr = content.split('=')[0]
+            commandStr, argsStr = content.split('=')[0]
             if commandStr == 'login.num':
-                argsStr = content.split('=')[1]
                 workwx.set_zk('/wbyb/common/bjb.login.num', argsStr)
                 rContent = f"set login num to {argsStr}"
             #if commandStr == 'login.key':
