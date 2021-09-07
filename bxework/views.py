@@ -57,10 +57,10 @@ def wx_callback():
                 argsStr = content.split('=')[1]
                 workwx.set_zk('/wbyb/common/bjb.login.num', argsStr)
                 rContent = f"set login num to {argsStr}"
-            if commandStr == 'login.key':
-                key = "".join(random.sample('zyxwvutsrqponmlkjihgfedcba0123456789', 3))
-                workwx.set_zk('/wbyb/common/bjb.login.prKey', key)
-                rContent = f"set login key to {key}"
+            #if commandStr == 'login.key':
+            #    key = "".join(random.sample('zyxwvutsrqponmlkjihgfedcba0123456789', 3))
+            #    workwx.set_zk('/wbyb/common/bjb.login.prKey', key)
+            #    rContent = f"set login key to {key}"
         else:
             rContent = f'你好 {fromuser}, {content}'
         return wxcb.EncryptMsg(fromuser, int(time.time() * 1000), rContent, get_args['nonce'])

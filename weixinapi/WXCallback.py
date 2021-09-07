@@ -38,15 +38,13 @@ def received_from_wx(get_args, post_data):
     touser = xml_tree.find('ToUserName').text
     fromuser = xml_tree.find('FromUserName').text
     create_time = xml_tree.find('CreateTime').text
-    event_key = xml_tree.find('EventKey').text
-    event = xml_tree.find('Event').text
     # msgid = xml_tree.find('MsgId').text
     content = ''
     if msg_type == 'text':
         content = xml_tree.find('Content').text
         return msg_type, content, touser, fromuser, create_time
-    if msg_type == 'event' and event == 'click':
-        content = event_key
+    if msg_type == 'event' and xml_tree.find('Event').text == 'click':
+        content = xml_tree.find('EventKey').text
         return msg_type, content, touser, fromuser, create_time
     
 
