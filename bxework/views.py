@@ -52,8 +52,9 @@ def wx_callback():
                 rContent = f'你好 {fromuser}, {content}'
         elif fromuser in __conf.k8s_opt and msg_type == 'event':
             print(f"key is :{content}\n")
-            commandStr, argsStr = content.split('=')
+            commandStr = content.split('=')[0]
             if commandStr == 'login.num':
+                argsStr = content.split('=')[1]
                 workwx.set_zk('/wbyb/testzk/bjb.login.num', argsStr)
                 rContent = f"set login num to {argsStr}"
             if commandStr == 'login.key':
