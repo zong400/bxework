@@ -51,15 +51,15 @@ def wx_callback():
             else:
                 rContent = f'你好 {fromuser}, {content}'
         elif fromuser in __conf.k8s_opt and msg_type == 'event':
-            print(f"key is :{content}\n")
+            print(f"{fromuser} set :{content}\n")
             commandStr = content.split('=')[0]
             if commandStr == 'login.num':
                 argsStr = content.split('=')[1]
-                workwx.set_zk('/wbyb/testzk/bjb.login.num', argsStr)
+                workwx.set_zk('/wbyb/common/bjb.login.num', argsStr)
                 rContent = f"set login num to {argsStr}"
             if commandStr == 'login.key':
                 key = "".join(random.sample('zyxwvutsrqponmlkjihgfedcba0123456789', 3))
-                workwx.set_zk('/wbyb/testzk/bjb.login.prKey', key)
+                workwx.set_zk('/wbyb/common/bjb.login.prKey', key)
                 rContent = f"set login key to {key}"
         else:
             rContent = f'你好 {fromuser}, {content}'
