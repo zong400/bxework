@@ -42,7 +42,13 @@ def received_from_wx(get_args, post_data):
     content = ''
     if msg_type == 'text':
         content = xml_tree.find('Content').text
-    return content, touser, fromuser, create_time
+        return msg_type, content, touser, fromuser, create_time
+    if msg_type == 'event' and xml_tree.find('Event').text == 'click':
+        content = xml_tree.find('EventKey').text
+        return msg_type, content, touser, fromuser, create_time
+    else:
+        pass
+    
 
 def EncryptMsg(toUser, createTime, content, nonce):
     rDataXML = '''<xml>

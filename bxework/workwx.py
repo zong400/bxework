@@ -212,6 +212,25 @@ def _full_deployment_name(shortname):
         return shortname
 
 
+def _list_deployments():
+    kube_conf = __conf.get_k8s_config()
+    kubeconfig.load_kube_config(
+        config_file=kube_conf['kubeconfig'], context=kube_conf['context']
+    )
+    v1 = kubeclient.AppsV1Api()
+    ret = v1.list_namespaced_deployment(kube_conf['namespace'])
+    deploynames = [item.metadata.name for item in ret.items]
+    return deploynames
+
+def list_commands(cmd, user):
+    wx = Weixin(corpid=__corpid, corpsecret=__k8s_secret, redis_pool=__conf.redis_pool)
+    wxmsg = WeixinMsg(wx)
+    cmds = [f'{cmd} {deploy}' for deploy in _list_deployments()]
+    for c in cmds:
+        wxmsg.send_txt_msg(c, __k8s_agentid, user)
+    return 'done'
+
+
 def get_pods(deployname='all'):
     kube_conf = __conf.get_k8s_config()
     kubeconfig.load_kube_config(
@@ -435,7 +454,7 @@ def arthas(pod_name, command):
 def set_zk(key, value):
     exec_command = ["/bin/sh", "-c", f"bin/zkCli.sh -server localhost:2181 set {key} {value}"]
     result = do_exec("zk3-k8s-node4.bxr.cn", exec_command)
-    return result
+    return "done"
 
 
 def send_warn_to_kafka(waring):
