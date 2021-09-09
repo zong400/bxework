@@ -47,6 +47,10 @@ def wx_callback():
                 key = "".join(random.sample('zyxwvutsrqponmlkjihgfedcba0123456789', 3))
                 rContent = workwx.set_zk('/wbyb/common/bjb.login.prKey', key)
                 print(f"{fromuser} set login key to :{key}\n")
+            elif commandStr == 'listtop':
+                rContent = workwx.list_commands('top.pod', fromuser)
+            elif commandStr == 'listscale':
+                rContent = workwx.list_commands('scale', fromuser)
             elif commandStr == 'help':
                 url = __conf.domain + '/static/help.html'
                 rContent = '点击链接查看：<a href="%s">help</a>' % url
@@ -136,6 +140,13 @@ def k8s_pod(deployname):
         deployname = 'sys-pay-core'
     pods = workwx.get_pods(deployname)
     return render_template('get_pod.html', pods=pods)
+
+@app.route('/workwx/api/k8s/del/pod/<podname>', methods=['GET'])
+def k8s_del_pod(podname):
+    if request.remote_addr == '10.22.0.48':
+        return 'good'
+    else:
+        return 'bad ip'
 
 @app.route('/workwx/api/k8s/top/nodes')
 def k8s_top_node():
